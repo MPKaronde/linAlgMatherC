@@ -11,15 +11,15 @@ typedef struct
 } Matrix;
 
 // initializes matrix
-void makeMatrix(Matrix *matrix, int rows, int size, int itemsPerRow)
+void makeMatrix(Matrix *matrix, int rows, int itemsPerRow)
 {
     // set items per row and size
     matrix->rows = rows;
-    matrix->size = size;
-    matrix->itemsPerRow = size / rows;
+    matrix->itemsPerRow = itemsPerRow;
+    matrix->size = rows * itemsPerRow;
 
     // allocate space for matrix data
-    matrix->data = (int *)malloc(size * sizeof(int));
+    matrix->data = (int *)malloc(matrix->size * sizeof(int));
 }
 
 // set matrix value at point
@@ -112,13 +112,13 @@ int multiplyMatrices(Matrix *inp1, Matrix *inp2, Matrix *out)
 int main()
 {
     Matrix m1;
-    makeMatrix(&m1, 3, 9, 3);
+    makeMatrix(&m1, 2, 3);
 
     Matrix m2;
-    makeMatrix(&m2, 3, 9, 3);
+    makeMatrix(&m2, 3, 2);
 
     Matrix result;
-    makeMatrix(&result, 3, 9, 3);
+    makeMatrix(&result, 2, 2);
 
     int i = 0;
     for (int x = 0; x < m1.rows; x++)
@@ -126,7 +126,7 @@ int main()
         for (int y = 0; y < m1.itemsPerRow; y++)
         {
             setPointValue(&m1, x, y, i);
-            setPointValue(&m2, x, y, i);
+            setPointValue(&m2, y, x, i);
             i++;
         }
     }
@@ -138,8 +138,14 @@ int main()
     printf("X\n");
     printf("\n");
 
-    multiplyMatrices(&m1, &m2, &result);
-    printMatrix(&result);
+    if (multiplyMatrices(&m1, &m2, &result) == 0)
+    {
+        printf("Error, could not mult");
+    }
+    else
+    {
+        printMatrix(&result);
+    }
 
     freeMatrix(&m1);
     freeMatrix(&m2);
